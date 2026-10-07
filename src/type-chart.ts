@@ -59,13 +59,13 @@ export function enumerateDefensePairs(names: string[]): string[][] {
   return names.flatMap((name, index) => names.slice(index + 1).map(other => [name, other]))
 }
 
-export function buildResults(chart: TypeChart, selection: Selection, dual: boolean): Result[] {
+export function buildResults(chart: TypeChart, selection: Selection): Result[] {
   const { attack, defense } = selection
   if (attack && defense.length) {
     return [{ names: defense, multiplier: calculateEffectiveness(chart, attack, defense) }]
   }
   if (attack) {
-    const candidates = dual ? enumerateDefensePairs(chart.names) : chart.names.map(name => [name])
+    const candidates = [...chart.names.map(name => [name]), ...enumerateDefensePairs(chart.names)]
     return candidates.map(names => ({ names, multiplier: calculateEffectiveness(chart, attack, names) }))
   }
   if (defense.length) {

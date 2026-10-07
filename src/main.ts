@@ -7,7 +7,6 @@ import { typeIcons } from './data/type-icons'
 const app = document.querySelector<HTMLDivElement>('#app')!
 let chart: TypeChart | null = null
 let selection: Selection = { attack: null, defense: [] }
-let dual = false
 let loading = true
 let error = ''
 const labels: Record<Effectiveness, string> = { 2.56: '重複弱点', 1.6: '弱点', 1: '等倍', 0.625: '耐性', 0.390625: '重複耐性' }
@@ -41,11 +40,10 @@ function selector(side: 'attack' | 'defense'): string {
 }
 
 function results(): string {
-  const entries = buildResults(chart!, selection, dual)
+  const entries = buildResults(chart!, selection)
   const both = !!selection.attack && selection.defense.length > 0
   const attackOnly = !!selection.attack && !selection.defense.length
   const heading = both ? '対戦相性' : attackOnly ? '防御属性との相性' : selection.defense.length ? '攻撃属性との相性' : '相性'
-  const controls = attackOnly ? `<div class="segmented" role="group" aria-label="防御候補の属性数"><button data-action="single" data-focus="single" aria-pressed="${!dual}">単属性 <span>9</span></button><button data-action="dual" data-focus="dual" aria-pressed="${dual}">2属性 <span>36</span></button></div>` : ''
   let content = ''
   if (!entries.length) {
     content = '<div class="empty-state"><i data-lucide="swords"></i><span>未選択</span><span class="empty-value">—</span></div>'
@@ -53,12 +51,16 @@ function results(): string {
     const value = entries[0].multiplier
     content = `<div class="match-result stage-${stages.indexOf(value)}"><div class="match-types"><span class="type-chip">${typeBadge(selection.attack!)}</span><i data-lucide="arrow-right"></i><div class="defense-chips">${selection.defense.map(name => `<span class="type-chip">${typeBadge(name)}</span>`).join('<span class="plus">+</span>')}</div></div><div class="match-score"><strong>${multiplierText(value)}</strong><span>${labels[value]}</span></div></div>`
   } else {
-    content = `<div class="result-groups">${stages.map((value, stage) => {
+    const candidateItems = (candidates: typeof entries): string => candidates.map(entry => `<button class="result-candidate" data-candidate="${entry.names.map(name => chart!.names.indexOf(name)).join(',')}" data-focus="candidate-${entry.names.map(name => chart!.names.indexOf(name)).join('-')}" aria-label="${escape(entry.names.join('・'))}を${attackOnly ? '防御' : '攻撃'}に選択">${entry.names.map(name => `<span class="candidate-type">${typeBadge(name)}</span>`).join('<span class="plus">+</span>')}</button>`).join('') || '<span class="no-items">—</span>'
+    content = `<div class="result-groups${attackOnly ? ' split-results' : ''}">${attackOnly ? '<div class="result-column-headings"><span>単属性</span><span>2属性</span></div>' : ''}${stages.map((value, stage) => {
       const group = entries.filter(entry => entry.multiplier === value)
-      return `<section class="result-row stage-${stage}" data-multiplier="${value}" aria-label="${labels[value]}"><div class="result-label"><strong>${multiplierText(value)}</strong><div><h3>${labels[value]}</h3><span class="group-count">${group.length}件</span></div></div><div class="result-items">${group.map(entry => `<button class="result-candidate" data-candidate="${entry.names.map(name => chart!.names.indexOf(name)).join(',')}" data-focus="candidate-${entry.names.map(name => chart!.names.indexOf(name)).join('-')}" aria-label="${escape(entry.names.join('・'))}を${attackOnly ? '防御' : '攻撃'}に選択">${entry.names.map(name => `<span class="candidate-type">${typeBadge(name)}</span>`).join('<span class="plus">+</span>')}</button>`).join('') || '<span class="no-items">—</span>'}</div></section>`
+      const items = attackOnly
+        ? `<div class="result-columns"><div class="result-items single-items" role="group" aria-label="単属性">${candidateItems(group.filter(entry => entry.names.length === 1))}</div><div class="result-items dual-items" role="group" aria-label="2属性">${candidateItems(group.filter(entry => entry.names.length === 2))}</div></div>`
+        : `<div class="result-items">${candidateItems(group)}</div>`
+      return `<section class="result-row stage-${stage}" data-multiplier="${value}" aria-label="${labels[value]}"><div class="result-label"><strong>${multiplierText(value)}</strong><div><h3>${labels[value]}</h3><span class="group-count">${group.length}件</span></div></div>${items}</section>`
     }).join('')}</div>`
   }
-  return `<section class="results" aria-labelledby="results-title"><div class="results-heading"><h2 id="results-title">${heading}</h2>${controls}<span class="result-total" role="status" aria-live="polite">${both ? labels[entries[0].multiplier] : entries.length ? `${entries.length}候補` : ''}</span></div>${content}</section>`
+  return `<section class="results" aria-labelledby="results-title"><div class="results-heading"><h2 id="results-title">${heading}</h2><span class="result-total" role="status" aria-live="polite">${both ? labels[entries[0].multiplier] : entries.length ? `${entries.length}候補` : ''}</span></div>${content}</section>`
 }
 
 function render(): void {
@@ -85,8 +87,6 @@ app.addEventListener('click', event => {
   if (action === 'reset') selection = { attack: null, defense: [] }
   if (action === 'clear-attack') selection = { ...selection, attack: null }
   if (action === 'clear-defense') selection = { ...selection, defense: [] }
-  if (action === 'single') dual = false
-  if (action === 'dual') dual = true
   const side = button.dataset.side
   if (side === 'attack' || side === 'defense') {
     selection = toggleSelection(selection, side, chart.names[Number(button.dataset.index)])

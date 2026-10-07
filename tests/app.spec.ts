@@ -16,7 +16,7 @@ async function checkLayout(page: Page): Promise<void> {
   const violations = await page.evaluate(() => {
     const issues: string[] = []
     if (document.documentElement.scrollWidth > window.innerWidth) issues.push('page overflow')
-    document.querySelectorAll<HTMLElement>('.type-button, .result-candidate, .result-label, .match-result, .header-actions').forEach(element => {
+    document.querySelectorAll<HTMLElement>('.type-button, .result-candidate, .result-label, .result-columns, .result-items, .result-column-headings, .match-result, .header-actions').forEach(element => {
       const bounds = element.getBoundingClientRect()
       if (bounds.left < -1 || bounds.right > window.innerWidth + 1) issues.push(`viewport: ${element.className}`)
       if (element.scrollWidth > element.clientWidth + 1) issues.push(`content: ${element.className}`)
@@ -33,22 +33,44 @@ async function checkLayout(page: Page): Promise<void> {
   expect(violations).toEqual([])
 }
 
-test('攻撃のみ：9候補、36組、候補から対戦相性へ', async ({ page }, testInfo) => {
+test('攻撃のみ：単属性9件と2属性36組を45候補として統合し、候補から対戦相性へ', async ({ page }, testInfo) => {
   const errors: string[] = []
   page.on('pageerror', error => errors.push(error.message))
   await load(page)
   await expect(page.locator('.empty-state')).toContainText('未選択')
   await typeButton(page, 'attack', 0).click()
-  await expect(page.locator('.result-candidate')).toHaveCount(9)
-  await expect(page.locator('[data-multiplier="1.6"] .result-candidate')).toHaveCount(2)
-  await expect(page.locator('[data-multiplier="0.625"] .result-candidate')).toHaveCount(3)
-  await page.getByRole('button', { name: '2属性 36', exact: true }).click()
-  await expect(page.locator('.result-candidate')).toHaveCount(36)
+  await expect(page.locator('.result-candidate')).toHaveCount(45)
+  await expect(page.locator('.result-total')).toHaveText('45候補')
+  await expect(page.locator('.result-candidate:not([data-candidate*=","])')).toHaveCount(9)
+  await expect(page.locator('.result-candidate[data-candidate*=","]')).toHaveCount(36)
+  await expect(page.locator('.result-column-headings')).toHaveText('単属性2属性')
+  await expect(page.locator('.single-items .result-candidate')).toHaveCount(9)
+  await expect(page.locator('.dual-items .result-candidate')).toHaveCount(36)
+  await expect(page.locator('.single-items .result-candidate[data-candidate*=","]')).toHaveCount(0)
+  await expect(page.locator('.dual-items .result-candidate:not([data-candidate*=","])')).toHaveCount(0)
+  const columnsAligned = await page.locator('.result-columns').evaluateAll(columns => columns.every(column => {
+    const single = column.querySelector('.single-items')!.getBoundingClientRect()
+    const dual = column.querySelector('.dual-items')!.getBoundingClientRect()
+    return single.right <= dual.left + 1 && Math.abs(single.top - dual.top) < 1
+  }))
+  expect(columnsAligned).toBe(true)
+  await expect(page.getByRole('group', { name: '防御候補の属性数' })).toHaveCount(0)
+  await expect(page.locator('[data-multiplier="1.6"] .result-candidate:not([data-candidate*=","])')).toHaveCount(2)
+  await expect(page.locator('[data-multiplier="0.625"] .result-candidate:not([data-candidate*=","])')).toHaveCount(3)
   for (const value of ['2.56', '1.6', '1', '0.625', '0.390625']) {
-    expect(await page.locator(`[data-multiplier="${value}"] .result-candidate`).count()).toBeGreaterThan(0)
+    const group = page.locator(`[data-multiplier="${value}"]`)
+    const count = await group.locator('.result-candidate').count()
+    expect(count).toBeGreaterThan(0)
+    await expect(group.locator('.group-count')).toHaveText(`${count}件`)
   }
   await checkLayout(page)
-  await page.screenshot({ path: testInfo.outputPath('dual-candidates.png'), fullPage: true })
+  await page.screenshot({ path: testInfo.outputPath('combined-candidates.png'), fullPage: true })
+  await page.locator('[data-candidate="1"]').click()
+  await expect(page.locator('.match-score strong')).toHaveText('×1.6')
+  await expect(page.locator('[data-side="defense"][aria-pressed="true"]')).toHaveCount(1)
+  await expect(typeButton(page, 'defense', 1)).toHaveAttribute('aria-pressed', 'true')
+  await page.getByRole('button', { name: '防御の選択を解除', exact: true }).click()
+  await expect(page.locator('.result-candidate')).toHaveCount(45)
   await page.locator('[data-candidate="1,2"]').click()
   await expect(page.locator('.match-score')).toContainText('×2.56')
   await expect(page.locator('[data-side="defense"][aria-pressed="true"]')).toHaveCount(2)
@@ -112,7 +134,7 @@ test('長い属性名・特殊文字・特殊キーを安全に表示', async ({
   await expect(page.locator('.type-button')).toHaveCount(18)
   await expect(page.locator('.type-button img')).toHaveCount(0)
   await typeButton(page, 'attack', 0).click()
-  await page.getByRole('button', { name: '2属性 36', exact: true }).click()
+  await expect(page.locator('.result-candidate')).toHaveCount(45)
   await checkLayout(page)
   await typeButton(page, 'defense', 2).click()
   await typeButton(page, 'defense', 3).click()

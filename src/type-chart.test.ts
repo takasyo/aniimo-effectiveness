@@ -66,13 +66,25 @@ describe('候補一覧', () => {
     expect(pairs.every(pair => chart.names.indexOf(pair[0]) < chart.names.indexOf(pair[1]))).toBe(true)
   })
   it('未選択・攻撃のみ・防御のみ・双方選択', () => {
-    expect(buildResults(chart, { attack: null, defense: [] }, false)).toEqual([])
-    expect(buildResults(chart, { attack, defense: [] }, false)).toHaveLength(9)
-    const dual = buildResults(chart, { attack, defense: [] }, true)
-    expect(dual).toHaveLength(36)
-    expect(new Set(dual.map(result => result.multiplier))).toEqual(new Set(stages))
-    expect(buildResults(chart, { attack: null, defense: ['水', '雷'] }, true)).toHaveLength(9)
-    expect(buildResults(chart, { attack, defense: ['水', '雷'] }, false)[0].multiplier).toBe(2.56)
+    expect(buildResults(chart, { attack: null, defense: [] })).toEqual([])
+    const results = buildResults(chart, { attack, defense: [] })
+    expect(results).toHaveLength(45)
+    expect(new Set(results.map(result => result.multiplier))).toEqual(new Set(stages))
+    expect(buildResults(chart, { attack: null, defense: ['水', '雷'] })).toHaveLength(9)
+    expect(buildResults(chart, { attack, defense: ['水', '雷'] })[0].multiplier).toBe(2.56)
+  })
+  it('全9攻撃で単属性9件と2属性36組を順序・重複・倍率を保って統合する', () => {
+    const candidates = [...chart.names.map(name => [name]), ...enumerateDefensePairs(chart.names)]
+    for (const name of chart.names) {
+      const results = buildResults(chart, { attack: name, defense: [] })
+      expect(results.filter(result => result.names.length === 1)).toHaveLength(9)
+      expect(results.filter(result => result.names.length === 2)).toHaveLength(36)
+      expect(results.map(result => result.names)).toEqual(candidates)
+      expect(new Set(results.map(result => result.names.join('|'))).size).toBe(45)
+      for (const result of results) {
+        expect(result.multiplier).toBe(calculateEffectiveness(chart, name, result.names))
+      }
+    }
   })
 })
 
