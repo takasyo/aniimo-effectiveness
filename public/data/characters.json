@@ -3,11 +3,11 @@
     "no": 3,
     "name": "ウルフファイター",
     "form": [
-      { "form_name": "基本", "types": ["火"] },
-      { "form_name": "高地", "types": ["火", "土"] },
-      { "form_name": "雷雨", "types": ["火", "雷"] },
-      { "form_name": "山林", "types": ["火"] },
-      { "form_name": "虹色", "types": ["火"] }
+      { "form_name": "基本", "types": ["火"], "icon": "https://img.gamewith.jp/article_tools/aniimo/gacha/aniimo_icon_7.png" },
+      { "form_name": "高地", "types": ["火", "土"], "icon": "https://img.gamewith.jp/article_tools/aniimo/gacha/aniimo_icon_8.png" },
+      { "form_name": "雷雨", "types": ["火", "雷"], "icon": "https://img.gamewith.jp/article_tools/aniimo/gacha/aniimo_icon_9.png" },
+      { "form_name": "山林", "types": ["火"], "icon": "https://img.gamewith.jp/article_tools/aniimo/gacha/aniimo_icon_11.png" },
+      { "form_name": "虹色", "types": ["火"], "icon": "https://img.gamewith.jp/article_tools/aniimo/gacha/aniimo_icon_10.png" }
     ]
   },
   {

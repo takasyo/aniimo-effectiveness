@@ -21,8 +21,7 @@ const multiplierText = (value: Effectiveness) => `×${value}`
 
 function marker(name: string): string {
   const index = chart!.names.indexOf(name)
-  const path = Object.hasOwn(typeIcons, name) ? typeIcons[name] : undefined
-  const url = path ? `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}` : ''
+  const url = Object.hasOwn(typeIcons, name) ? typeIcons[name] : ''
   return `<span class="type-marker" style="--type-color:${palette[index]}" aria-hidden="true"><span>${String(index + 1).padStart(2, '0')}</span>${url ? `<img src="${escape(url)}" alt="" />` : ''}</span>`
 }
 
@@ -44,7 +43,7 @@ function characterList(): string {
   const matches = matchingCharacters(names)
   const content = characterError ? '<p class="character-empty">キャラ情報を取得できませんでした。</p>'
     : !characters ? '<p class="character-empty">キャラ情報を読み込み中…</p>'
-    : matches.length ? `<ul class="character-names">${matches.map(character => `<li>${escape(character.name)}${character.form ? `（${escape(character.form)}）` : ''}</li>`).join('')}</ul>`
+    : matches.length ? `<ul class="character-names">${matches.map(character => `<li>${character.icon ? `<img class="character-icon" src="${escape(character.icon)}" alt="" aria-hidden="true">` : ''}<span>${escape(character.name)}${character.form ? `（${escape(character.form)}）` : ''}</span></li>`).join('')}</ul>`
     : '<p class="character-empty">該当キャラなし</p>'
   return `<section id="character-list" class="character-list" aria-labelledby="character-title"><div class="character-heading"><h2 id="character-title">${escape(names.join('＋'))}のキャラ</h2><span class="character-total" role="status" aria-live="polite">${escape(names.join('＋'))}：${characterCount(names)}</span></div>${content}</section>`
 }
@@ -103,7 +102,7 @@ function render(): void {
     <main>${chart ? `<div class="selectors">${selector('attack')}${selector('defense')}</div>${results()}` : `<div class="loading-state" role="status">${loading ? '相性表を読み込み中…' : '相性表を読み込めませんでした。'}</div>`}</main>
     <footer><span>TYPE MATCH / 9</span></footer>`
   createIcons({ icons: { RotateCcw, ArrowRight, Swords, Shield, X }, attrs: { 'aria-hidden': 'true', 'stroke-width': 1.7 } })
-  app.querySelectorAll<HTMLImageElement>('.type-marker img').forEach(image => {
+  app.querySelectorAll<HTMLImageElement>('.type-marker img, .character-icon').forEach(image => {
     image.addEventListener('error', () => image.remove(), { once: true })
   })
   if (focus) app.querySelectorAll<HTMLElement>('[data-focus]').forEach(element => {

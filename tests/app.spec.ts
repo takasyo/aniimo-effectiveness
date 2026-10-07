@@ -36,8 +36,13 @@ async function checkLayout(page: Page): Promise<void> {
 test('攻撃のみ：45候補のキャラ人数と一覧を表示し、条件は変更しない', async ({ page }, testInfo) => {
   const errors: string[] = []
   page.on('pageerror', error => errors.push(error.message))
+  await page.route('https://example.com/**', route => route.fulfill({
+    status: 200,
+    contentType: 'image/svg+xml',
+    body: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"><rect width="1" height="1"/></svg>',
+  }))
   await page.route('**/data/characters.json', route => route.fulfill({ json: [
-    { name: 'ステラメイジ', types: ['闇'] },
+    { name: 'ステラメイジ', icon: 'https://example.com/stella.svg', types: ['闇'] },
     { name: 'ロータスドラゴン', types: ['草', '水'] },
     { name: '複合属性の集計テスト', types: ['水', '草'] },
   ] }))
@@ -74,6 +79,7 @@ test('攻撃のみ：45候補のキャラ人数と一覧を表示し、条件は
   await expect(page.locator('[data-candidate="1,4"] .character-count')).toHaveText('2体')
   await page.locator('[data-candidate="7"]').click()
   await expect(page.locator('.character-names li')).toHaveText(['ステラメイジ'])
+  await expect(page.locator('.character-icon')).toHaveAttribute('src', 'https://example.com/stella.svg')
   await expect(page.locator('[data-candidate="7"]')).toHaveAttribute('aria-pressed', 'true')
   await page.locator('[data-candidate="1,4"]').focus()
   await page.keyboard.press('Enter')

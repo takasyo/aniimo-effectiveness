@@ -35,7 +35,7 @@ npm run dev
 
 ## キャラ情報
 
-`public/data/characters.json` にUTF-8のJSON配列を配置します。形式の例：
+`public/data/characters.json` にUTF-8のJSON配列を配置します。`icon` は省略可能な画像URLです。キャラ直下に指定すると各フォームで共通になり、フォーム内に指定するとそのフォームだけ上書きできます。形式の例：
 
 ```json
 [
@@ -45,15 +45,17 @@ npm run dev
   },
   {
     "name": "ロータウス",
+    "icon": "https://example.com/lotus.png",
     "form": [
       { "form_name": "基本", "types": ["水", "草"] },
-      { "form_name": "虹色", "types": ["水", "光"] }
+      { "form_name": "虹色", "icon": "https://example.com/lotus-rainbow.png", "types": ["水", "光"] }
     ]
   }
 ]
 ```
 
 - `name` は空欄でないキャラ名、`form` はフォームの配列です。各フォームの `form_name` は空欄でない名前、`types` は相性表と同じ名前の異なる1〜2属性です。前後の空白は除去します。
+- `icon` は `http://` または `https://` で始まる画像URLです。キャラ共通またはフォームごとに指定でき、読み込みに失敗した場合は画像を隠して名前を表示します。
 - 一覧では「ロータウス（虹色）」のように表示します。従来形式の `{ "name": "キャラ名", "form": "フォーム名", "types": ["属性"] }` と `{ "name": "キャラ名", "types": ["属性"] }` も読み込めます。
 - 同名でもフォームが異なれば別件として集計します。同じキャラ名・フォーム名の組み合わせの重複はエラーです。フォーム省略同士も重複として扱います。
 - 属性は順序に依存せず完全一致で集計します。`["水", "草"]` と `["草", "水"]` は同じ複合属性ですが、水・草それぞれの単属性には含めません。
@@ -67,12 +69,12 @@ npm run dev
 
 ## 属性アイコン
 
-画像を `public/icons/` に配置し、`src/data/type-icons.ts` にCSVと同じ属性名をキーとして設定します。
+`src/data/type-icons.ts` にCSVと同じ属性名をキーとして画像URLを設定します。
 
 ```ts
 export const typeIcons: Record<string, string> = {
-  '火': 'icons/fire.png',
-  '水': 'icons/water.png',
+  '火': 'https://example.com/fire.png',
+  '水': 'https://example.com/water.png',
 }
 ```
 

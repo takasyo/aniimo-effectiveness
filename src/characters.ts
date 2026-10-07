@@ -1,4 +1,18 @@
-export type Character = { name: string; form?: string; types: string[] }
+export type Character = { name: string; form?: string; types: string[]; icon?: string }
+
+function parseIconUrl(value: unknown, prefix: string): string | undefined {
+  if (value === undefined) return undefined
+  if (typeof value !== 'string' || !value.trim()) {
+    throw new Error(`${prefix}iconにはhttpまたはhttpsのURLが必要です。`)
+  }
+  try {
+    const url = new URL(value.trim())
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') throw new Error()
+    return url.href
+  } catch {
+    throw new Error(`${prefix}iconにはhttpまたはhttpsのURLが必要です。`)
+  }
+}
 
 export function parseCharacters(data: unknown, typeNames: string[]): Character[] {
   if (!Array.isArray(data)) throw new Error('キャラデータはJSON配列で指定してください。')
@@ -9,7 +23,8 @@ export function parseCharacters(data: unknown, typeNames: string[]): Character[]
       throw new Error(`${prefix}nameには空欄でないキャラ名が必要です。`)
     }
     const name = record.name.trim()
-    const addCharacter = (form: unknown, rawTypes: unknown): Character => {
+    const recordIcon = 'icon' in record ? parseIconUrl(record.icon, prefix) : undefined
+    const addCharacter = (form: unknown, rawTypes: unknown, icon = recordIcon): Character => {
       let normalizedForm: string | undefined
       if (form !== undefined) {
         if (typeof form !== 'string' || !form.trim()) {
@@ -30,7 +45,7 @@ export function parseCharacters(data: unknown, typeNames: string[]): Character[]
       })
       if (new Set(types).size !== types.length) throw new Error(`${prefix}属性が重複しています。`)
       names.add(identity)
-      return { name, ...(normalizedForm ? { form: normalizedForm } : {}), types }
+      return { name, ...(normalizedForm ? { form: normalizedForm } : {}), types, ...(icon ? { icon } : {}) }
     }
 
     if ('form' in record && Array.isArray(record.form)) {
@@ -39,7 +54,8 @@ export function parseCharacters(data: unknown, typeNames: string[]): Character[]
         if (!form || typeof form !== 'object' || !('form_name' in form) || !('types' in form)) {
           throw new Error(`${prefix}formにはform_nameとtypesが必要です。`)
         }
-        return addCharacter(form.form_name, form.types)
+        const icon = 'icon' in form ? parseIconUrl(form.icon, prefix) : recordIcon
+        return addCharacter(form.form_name, form.types, icon)
       })
     }
 

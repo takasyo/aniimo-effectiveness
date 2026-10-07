@@ -22,6 +22,19 @@ describe('キャラデータ', () => {
     expect(indexCharacters(parseCharacters([], types), types).size).toBe(0)
     expect(parseCharacters([{ name: ' ステラメイジ ', types: [' 闇 '] }], types)).toEqual([{ name: 'ステラメイジ', types: ['闇'] }])
   })
+  it('キャラまたはフォームごとのアイコンURLを読み込み、フォームでは個別URLを優先する', () => {
+    expect(parseCharacters([
+      { name: 'ステラメイジ', icon: 'https://example.com/common.png', types: ['闇'] },
+      { name: 'ロータウス', icon: 'https://example.com/default.png', form: [
+        { form_name: '基本', types: ['水', '草'] },
+        { form_name: '虹色', icon: 'https://example.com/rainbow.png', types: ['水', '光'] },
+      ] },
+    ], types)).toEqual([
+      { name: 'ステラメイジ', types: ['闇'], icon: 'https://example.com/common.png' },
+      { name: 'ロータウス', form: '基本', types: ['水', '草'], icon: 'https://example.com/default.png' },
+      { name: 'ロータウス', form: '虹色', types: ['水', '光'], icon: 'https://example.com/rainbow.png' },
+    ])
+  })
   it('同名の異なるフォームを個別に集計する', () => {
     const characters = parseCharacters([
       { name: 'ロータウス', form: [
@@ -70,6 +83,9 @@ describe('キャラデータ', () => {
     [{ name: 'キャラ', form: [{ form_name: '', types: ['闇'] }] }],
     [{ name: 'キャラ', form: '基本', types: ['闇'] }, { name: ' キャラ ', form: ' 基本 ', types: ['水'] }],
     [{ name: 'キャラ', form: [{ form_name: '基本', types: ['闇'] }, { form_name: ' 基本 ', types: ['水'] }] }],
+    [{ name: 'キャラ', icon: 'javascript:alert(1)', types: ['闇'] }],
+    [{ name: 'キャラ', icon: '/images/character.png', types: ['闇'] }],
+    [{ name: 'キャラ', form: [{ form_name: '基本', icon: 'data:image/png;base64,AA==', types: ['闇'] }] }],
   ].map(data => ({ data })))('不正なデータ %# を拒否する', ({ data }) => {
     expect(() => parseCharacters(data, types)).toThrow()
   })

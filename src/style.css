@@ -94,7 +94,9 @@ button.result-candidate:hover, .result-candidate[aria-pressed='true'] { border-c
 .character-heading h2 { min-width: 0; overflow-wrap: anywhere; }
 .character-total { margin-left: auto; color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
 .character-names { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 0 24px; list-style: none; margin: 16px 0 0; padding: 0; }
-.character-names li { min-width: 0; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 13px; line-height: 1.7; overflow-wrap: anywhere; }
+.character-names li { min-width: 0; display: flex; align-items: center; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 13px; line-height: 1.7; overflow-wrap: anywhere; }
+.character-names li span { min-width: 0; overflow-wrap: anywhere; }
+.character-icon { width: 36px; height: 36px; flex: 0 0 36px; object-fit: cover; border: 1px solid var(--border); border-radius: 5px; }
 .character-empty { margin-top: 16px; color: var(--muted); font-size: 13px; line-height: 1.7; }
 .candidate-type, .type-chip { display: inline-flex; align-items: center; gap: 7px; min-width: 0; max-width: 100%; }
 .result-candidate .type-marker { width: 22px; height: 22px; flex-basis: 22px; font-size: 9px; }
