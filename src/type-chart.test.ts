@@ -73,7 +73,7 @@ describe('候補一覧', () => {
     expect(buildResults(chart, { attack: null, defense: ['水', '雷'] })).toHaveLength(9)
     expect(buildResults(chart, { attack, defense: ['水', '雷'] })[0].multiplier).toBe(2.56)
   })
-  it('全9攻撃で単属性9件と2属性36組を順序・重複・倍率を保って統合する', () => {
+  it('全9攻撃で単属性9件と複合属性36組を順序・重複・倍率を保って統合する', () => {
     const candidates = [...chart.names.map(name => [name]), ...enumerateDefensePairs(chart.names)]
     for (const name of chart.names) {
       const results = buildResults(chart, { attack: name, defense: [] })

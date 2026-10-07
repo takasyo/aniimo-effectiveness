@@ -52,10 +52,10 @@ function results(): string {
     content = `<div class="match-result stage-${stages.indexOf(value)}"><div class="match-types"><span class="type-chip">${typeBadge(selection.attack!)}</span><i data-lucide="arrow-right"></i><div class="defense-chips">${selection.defense.map(name => `<span class="type-chip">${typeBadge(name)}</span>`).join('<span class="plus">+</span>')}</div></div><div class="match-score"><strong>${multiplierText(value)}</strong><span>${labels[value]}</span></div></div>`
   } else {
     const candidateItems = (candidates: typeof entries): string => candidates.map(entry => `<button class="result-candidate" data-candidate="${entry.names.map(name => chart!.names.indexOf(name)).join(',')}" data-focus="candidate-${entry.names.map(name => chart!.names.indexOf(name)).join('-')}" aria-label="${escape(entry.names.join('・'))}を${attackOnly ? '防御' : '攻撃'}に選択">${entry.names.map(name => `<span class="candidate-type">${typeBadge(name)}</span>`).join('<span class="plus">+</span>')}</button>`).join('') || '<span class="no-items">—</span>'
-    content = `<div class="result-groups${attackOnly ? ' split-results' : ''}">${attackOnly ? '<div class="result-column-headings"><span>単属性</span><span>2属性</span></div>' : ''}${stages.map((value, stage) => {
+    content = `<div class="result-groups${attackOnly ? ' split-results' : ''}">${attackOnly ? '<div class="result-column-headings"><span>単属性</span><span>複合属性</span></div>' : ''}${stages.map((value, stage) => {
       const group = entries.filter(entry => entry.multiplier === value)
       const items = attackOnly
-        ? `<div class="result-columns"><div class="result-items single-items" role="group" aria-label="単属性">${candidateItems(group.filter(entry => entry.names.length === 1))}</div><div class="result-items dual-items" role="group" aria-label="2属性">${candidateItems(group.filter(entry => entry.names.length === 2))}</div></div>`
+        ? `<div class="result-columns"><div class="result-items single-items" role="group" aria-label="単属性">${candidateItems(group.filter(entry => entry.names.length === 1))}</div><div class="result-items dual-items" role="group" aria-label="複合属性">${candidateItems(group.filter(entry => entry.names.length === 2))}</div></div>`
         : `<div class="result-items">${candidateItems(group)}</div>`
       return `<section class="result-row stage-${stage}" data-multiplier="${value}" aria-label="${labels[value]}"><div class="result-label"><strong>${multiplierText(value)}</strong><div><h3>${labels[value]}</h3><span class="group-count">${group.length}件</span></div></div>${items}</section>`
     }).join('')}</div>`
@@ -65,7 +65,7 @@ function results(): string {
 
 function render(): void {
   const focus = (document.activeElement as HTMLElement | null)?.dataset.focus
-  app.innerHTML = `<header class="app-header"><div class="brand"><span class="brand-symbol" aria-hidden="true">9</span><div><p class="eyebrow">TYPE MATCH</p><h1>属性相性</h1></div></div><div class="header-actions"><button class="icon-button" data-action="reset" data-focus="reset" ${!selection.attack && !selection.defense.length ? 'disabled' : ''} title="すべての選択を解除" aria-label="すべての選択を解除"><i data-lucide="rotate-ccw"></i></button></div></header>
+  app.innerHTML = `<header class="app-header"><div class="brand"><span class="brand-symbol" aria-hidden="true">9</span><div><p class="eyebrow">ANIIMO TYPE EFFECTIVENESS</p><h1>アニモ属性相性</h1></div></div><div class="header-actions"><button class="icon-button" data-action="reset" data-focus="reset" ${!selection.attack && !selection.defense.length ? 'disabled' : ''} title="すべての選択を解除" aria-label="すべての選択を解除"><i data-lucide="rotate-ccw"></i></button></div></header>
     <div class="dataset-bar"><span class="dataset-status">相性表</span><span class="dataset-name">${chart ? escape(chart.names.join(' / ')) : ''}</span><span class="dataset-meta">9属性</span></div>
     ${error ? `<div class="error" role="alert">${escape(error)}</div>` : ''}
     <main>${chart ? `<div class="selectors">${selector('attack')}${selector('defense')}</div>${results()}` : `<div class="loading-state" role="status">${loading ? '相性表を読み込み中…' : '相性表を読み込めませんでした。'}</div>`}</main>

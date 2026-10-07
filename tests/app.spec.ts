@@ -43,7 +43,7 @@ test('攻撃のみ：単属性9件と2属性36組を45候補として統合し�
   await expect(page.locator('.result-total')).toHaveText('45候補')
   await expect(page.locator('.result-candidate:not([data-candidate*=","])')).toHaveCount(9)
   await expect(page.locator('.result-candidate[data-candidate*=","]')).toHaveCount(36)
-  await expect(page.locator('.result-column-headings')).toHaveText('単属性2属性')
+  await expect(page.locator('.result-column-headings')).toHaveText('単属性複合属性')
   await expect(page.locator('.single-items .result-candidate')).toHaveCount(9)
   await expect(page.locator('.dual-items .result-candidate')).toHaveCount(36)
   await expect(page.locator('.single-items .result-candidate[data-candidate*=","]')).toHaveCount(0)
