@@ -9,7 +9,13 @@ npm install
 npm run dev
 ```
 
-表示されたローカルURLを開いてください。静的配信するときは `npm run build` で生成される `dist` を配信します。HTMLの直接オープンではなくHTTPサーバーを使用します。
+表示されたローカルURLを開いてください。production buildはGitHub Pagesの `/aniimo-effectiveness/` 配下で配信される設定です。HTMLの直接オープンではなくHTTPサーバーを使用します。
+
+## GitHub Pagesへの公開
+
+このリポジトリは [https://takasyo.github.io/aniimo-effectiveness/](https://takasyo.github.io/aniimo-effectiveness/) での公開を想定しています。デフォルトブランチにpushするとGitHub Actionsがテストとproduction buildを実行し、成功後にGitHub Pagesへデプロイします。
+
+初回のみ、GitHubリポジトリの **Settings → Pages → Build and deployment → Source** で **GitHub Actions** を選択してください。デプロイ状況は **Actions** タブから確認できます。
 
 ## 固定相性表
 
