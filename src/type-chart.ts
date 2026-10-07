@@ -1,14 +1,14 @@
 import Papa from 'papaparse'
 
-export type BaseMultiplier = 0.5 | 1 | 2
-export type Effectiveness = 0.25 | BaseMultiplier | 4
+export type BaseMultiplier = 0.625 | 1 | 1.6
+export type Effectiveness = 0.390625 | BaseMultiplier | 2.56
 export type TypeChart = {
   names: string[]
   rows: Map<string, Map<string, BaseMultiplier>>
 }
 export type Selection = { attack: string | null; defense: string[] }
 export type Result = { names: string[]; multiplier: Effectiveness }
-export const stages: Effectiveness[] = [4, 2, 1, 0.5, 0.25]
+export const stages: Effectiveness[] = [2.56, 1.6, 1, 0.625, 0.390625]
 
 export function parseChart(csv: string): TypeChart {
   const parsed = Papa.parse<string[]>(csv.replace(/^\uFEFF/, ''), {
@@ -32,8 +32,8 @@ export function parseChart(csv: string): TypeChart {
     const values = new Map<string, BaseMultiplier>()
     names.forEach((name, index) => {
       const value = row[index + 1]
-      if (!['0.5', '1', '2'].includes(value)) {
-        throw new Error(`${row[0]} → ${name}: 倍率は0.5・1・2のいずれかにしてください。`)
+      if (!['0.625', '1', '1.6'].includes(value)) {
+        throw new Error(`${row[0]} → ${name}: 倍率は0.625・1・1.6のいずれかにしてください。`)
       }
       values.set(name, Number(value) as BaseMultiplier)
     })
@@ -46,13 +46,13 @@ export function calculateEffectiveness(chart: TypeChart, attack: string, defense
   if (defense.length < 1 || defense.length > 2 || new Set(defense).size !== defense.length) {
     throw new Error('防御は異なる1〜2属性を指定してください。')
   }
-  let product = 1
+  let advantage = 0
   for (const name of defense) {
     const value = chart.rows.get(attack)?.get(name)
     if (value === undefined) throw new Error('相性表にない属性です。')
-    product *= value
+    advantage += value === 1.6 ? 1 : value === 0.625 ? -1 : 0
   }
-  return product as Effectiveness
+  return stages[2 - advantage]
 }
 
 export function enumerateDefensePairs(names: string[]): string[][] {

@@ -21,12 +21,12 @@ async function checkLayout(page: Page): Promise<void> {
       if (bounds.left < -1 || bounds.right > window.innerWidth + 1) issues.push(`viewport: ${element.className}`)
       if (element.scrollWidth > element.clientWidth + 1) issues.push(`content: ${element.className}`)
     })
-    document.querySelectorAll<HTMLElement>('.type-name').forEach(element => {
+    document.querySelectorAll<HTMLElement>('.type-name, .result-label > strong, .match-score > strong').forEach(element => {
       const range = document.createRange()
       range.selectNodeContents(element)
       const textBounds = range.getBoundingClientRect()
       const bounds = element.getBoundingClientRect()
-      if (textBounds.right > bounds.right + 1 || textBounds.left < bounds.left - 1) issues.push('type text overflow')
+      if (textBounds.right > bounds.right + 1 || textBounds.left < bounds.left - 1) issues.push('text overflow')
     })
     return issues
   })
@@ -40,24 +40,24 @@ test('攻撃のみ：9候補、36組、候補から対戦相性へ', async ({ pa
   await expect(page.locator('.empty-state')).toContainText('未選択')
   await typeButton(page, 'attack', 0).click()
   await expect(page.locator('.result-candidate')).toHaveCount(9)
-  await expect(page.locator('[data-multiplier="2"] .result-candidate')).toHaveCount(2)
-  await expect(page.locator('[data-multiplier="0.5"] .result-candidate')).toHaveCount(3)
+  await expect(page.locator('[data-multiplier="1.6"] .result-candidate')).toHaveCount(2)
+  await expect(page.locator('[data-multiplier="0.625"] .result-candidate')).toHaveCount(3)
   await page.getByRole('button', { name: '2属性 36', exact: true }).click()
   await expect(page.locator('.result-candidate')).toHaveCount(36)
-  for (const value of ['4', '2', '1', '0.5', '0.25']) {
+  for (const value of ['2.56', '1.6', '1', '0.625', '0.390625']) {
     expect(await page.locator(`[data-multiplier="${value}"] .result-candidate`).count()).toBeGreaterThan(0)
   }
   await checkLayout(page)
   await page.screenshot({ path: testInfo.outputPath('dual-candidates.png'), fullPage: true })
   await page.locator('[data-candidate="1,2"]').click()
-  await expect(page.locator('.match-score')).toContainText('×4')
+  await expect(page.locator('.match-score')).toContainText('×2.56')
   await expect(page.locator('[data-side="defense"][aria-pressed="true"]')).toHaveCount(2)
   await checkLayout(page)
   await page.screenshot({ path: testInfo.outputPath('match.png'), fullPage: true })
   expect(errors).toEqual([])
 })
 
-test('防御のみ・選択上限・解除・攻撃の置換・5段階', async ({ page }) => {
+test('防御のみ・選択上限・解除・攻撃の置換・5段階', async ({ page }, testInfo) => {
   await load(page)
   await typeButton(page, 'defense', 1).click()
   await expect(page.locator('.result-candidate')).toHaveCount(9)
@@ -65,9 +65,9 @@ test('防御のみ・選択上限・解除・攻撃の置換・5段階', async (
   await expect(page.locator('.result-candidate')).toHaveCount(9)
   await expect(typeButton(page, 'defense', 3)).toBeDisabled()
   await expect(typeButton(page, 'defense', 1)).toBeEnabled()
-  await expect(page.locator('[data-multiplier="4"] .result-candidate')).toContainText(['氷'])
+  await expect(page.locator('[data-multiplier="2.56"] .result-candidate')).toContainText(['氷'])
   await page.getByRole('button', { name: '氷を攻撃に選択', exact: true }).click()
-  await expect(page.locator('.match-score')).toContainText('4倍弱点')
+  await expect(page.locator('.match-score')).toContainText('重複弱点')
   await typeButton(page, 'attack', 1).click()
   await expect(page.locator('[data-side="attack"][aria-pressed="true"]')).toHaveCount(1)
   await typeButton(page, 'attack', 1).click()
@@ -75,10 +75,12 @@ test('防御のみ・選択上限・解除・攻撃の置換・5段階', async (
   await reset(page).click()
   await typeButton(page, 'attack', 0).click()
   for (const [defense, expected] of [
-    [[1, 2], '×4'], [[1, 4], '×2'], [[1, 3], '×1'], [[3, 4], '×½'], [[3, 5], '×¼'],
+    [[1, 2], '×2.56'], [[1, 4], '×1.6'], [[1, 3], '×1'], [[3, 4], '×0.625'], [[3, 5], '×0.390625'],
   ] as const) {
     for (const index of defense) await typeButton(page, 'defense', index).click()
     await expect(page.locator('.match-score strong')).toHaveText(expected)
+    await checkLayout(page)
+    if (expected === '×0.390625') await page.screenshot({ path: testInfo.outputPath('double-resistance.png'), fullPage: true })
     await page.getByRole('button', { name: '防御の選択を解除', exact: true }).click()
   }
   await page.getByRole('button', { name: '攻撃の選択を解除', exact: true }).click()

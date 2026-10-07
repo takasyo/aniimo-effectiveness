@@ -10,10 +10,10 @@ let selection: Selection = { attack: null, defense: [] }
 let dual = false
 let loading = true
 let error = ''
-const labels: Record<Effectiveness, string> = { 4: '4倍弱点', 2: '2倍弱点', 1: '等倍', 0.5: '半減', 0.25: '4分の1' }
+const labels: Record<Effectiveness, string> = { 2.56: '重複弱点', 1.6: '弱点', 1: '等倍', 0.625: '耐性', 0.390625: '重複耐性' }
 const palette = ['#ba4545', '#287ba0', '#b07d14', '#40805a', '#ad5791', '#467fa2', '#687043', '#8b649e', '#636d7d']
 const escape = (text: string) => text.replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]!)
-const multiplierText = (value: Effectiveness) => value === 0.25 ? '×¼' : value === 0.5 ? '×½' : `×${value}`
+const multiplierText = (value: Effectiveness) => `×${value}`
 
 function marker(name: string): string {
   const index = chart!.names.indexOf(name)

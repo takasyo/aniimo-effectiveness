@@ -8,16 +8,26 @@ const attack = '氷'
 
 describe('相性計算', () => {
   it.each([
-    [['水'], 2], [['火'], 0.5], [['草'], 1],
-    [['水', '雷'], 4], [['水', '草'], 2],
-    [['水', '火'], 1], [['火', '草'], 0.5],
-    [['火', '土'], 0.25],
+    [['水'], 1.6], [['火'], 0.625], [['草'], 1],
+    [['水', '雷'], 2.56], [['水', '草'], 1.6],
+    [['水', '火'], 1], [['火', '草'], 0.625],
+    [['火', '土'], 0.390625],
   ])('%j → %s', (defense, expected) => {
     expect(calculateEffectiveness(chart, attack, defense as string[])).toBe(expected)
   })
   it('攻撃を行、防御を列として計算する', () => {
-    expect(calculateEffectiveness(chart, '水', ['氷'])).toBe(0.5)
-    expect(calculateEffectiveness(chart, '氷', ['水'])).toBe(2)
+    expect(calculateEffectiveness(chart, '水', ['氷'])).toBe(0.625)
+    expect(calculateEffectiveness(chart, '氷', ['水'])).toBe(1.6)
+  })
+  it('全9攻撃×36組で積と一致し、誤差なく5段階に収まる', () => {
+    for (const name of chart.names) {
+      for (const defense of enumerateDefensePairs(chart.names)) {
+        const product = defense.reduce((value, target) => value * chart.rows.get(name)!.get(target)!, 1)
+        const result = calculateEffectiveness(chart, name, defense)
+        expect(result).toBe(Number(product.toFixed(6)))
+        expect(stages).toContain(result)
+      }
+    }
   })
   it.each([[], ['水', '水'], ['氷', '水', '雷'], ['未知']])('不正な防御 %j を拒否', (...defense) => {
     expect(() => calculateEffectiveness(chart, attack, defense)).toThrow()
@@ -31,7 +41,7 @@ describe('CSV検証', () => {
     const text = '\uFEFF' + Papa.unparse([cells[0], ...cells.slice(1).reverse()], { quotes: true, newline: '\r\n' })
     expect(parseChart(text)).toEqual(chart)
   })
-  it.each(['0', '4', '', 'NaN', '16'])('不正な倍率 %s を拒否', value => {
+  it.each(['0', '0.5', '2', '4', '', 'NaN', '16'])('不正な倍率 %s を拒否', value => {
     const cells = Papa.parse<string[]>(chartCsv.trim()).data
     cells[1][1] = value
     expect(() => parseChart(Papa.unparse(cells))).toThrow('倍率')
@@ -62,7 +72,7 @@ describe('候補一覧', () => {
     expect(dual).toHaveLength(36)
     expect(new Set(dual.map(result => result.multiplier))).toEqual(new Set(stages))
     expect(buildResults(chart, { attack: null, defense: ['水', '雷'] }, true)).toHaveLength(9)
-    expect(buildResults(chart, { attack, defense: ['水', '雷'] }, false)[0].multiplier).toBe(4)
+    expect(buildResults(chart, { attack, defense: ['水', '雷'] }, false)[0].multiplier).toBe(2.56)
   })
 })
 
