@@ -1,0 +1,31 @@
+[
+  {
+    "no": 3,
+    "name": "ウルフファイター",
+    "form": [
+      { "form_name": "基本", "types": ["火"] },
+      { "form_name": "高地", "types": ["火", "土"] },
+      { "form_name": "雷雨", "types": ["火", "雷"] },
+      { "form_name": "山林", "types": ["火"] },
+      { "form_name": "虹色", "types": ["火"] }
+    ]
+  },
+  {
+    "no": 4,
+    "name": "ウルフファントム",
+    "form": [
+      { "form_name": "基本", "types": ["闇", "火"] },
+      { "form_name": "虹色", "types": ["闇", "火"] }
+    ]
+  },
+  {
+    "no": 15,
+    "name": "ロータウス",
+    "form": [
+      { "form_name": "基本", "types": ["水", "氷"] },
+      { "form_name": "花畑", "types": ["水", "氷"] },
+      { "form_name": "雪原", "types": ["水", "氷"] },
+      { "form_name": "虹色", "types": ["水", "光"] }
+    ]
+  }
+]

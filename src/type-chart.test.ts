@@ -70,8 +70,36 @@ describe('候補一覧', () => {
     const results = buildResults(chart, { attack, defense: [] })
     expect(results).toHaveLength(45)
     expect(new Set(results.map(result => result.multiplier))).toEqual(new Set(stages))
+    expect(buildResults(chart, { attack: null, defense: ['氷'] })).toHaveLength(9)
     expect(buildResults(chart, { attack: null, defense: ['水', '雷'] })).toHaveLength(9)
-    expect(buildResults(chart, { attack, defense: ['水', '雷'] })[0].multiplier).toBe(2.56)
+    expect(buildResults(chart, { attack, defense: ['水', '雷'] })).toEqual([
+      { names: ['水', '雷'], multiplier: 2.56 },
+    ])
+    expect(buildResults(chart, { attack, defense: ['雷', '水'] })).toEqual([
+      { names: ['雷', '水'], multiplier: 2.56 },
+    ])
+  })
+  it('雷攻撃・氷防御は単属性氷と氷を含む8組だけを表示する', () => {
+    const results = buildResults(chart, { attack: '雷', defense: ['氷'] })
+    expect(results.map(result => result.names)).toEqual([
+      ['氷'], ...chart.names.slice(1).map(name => ['氷', name]),
+    ])
+    expect(results).toHaveLength(9)
+  })
+  it('全9攻撃×9防御で単属性1件と複合8組を順序・重複・倍率を保って絞る', () => {
+    for (const name of chart.names) {
+      const all = buildResults(chart, { attack: name, defense: [] })
+      for (const defense of chart.names) {
+        const results = buildResults(chart, { attack: name, defense: [defense] })
+        expect(results).toEqual(all.filter(result => result.names.includes(defense)))
+        expect(results.filter(result => result.names.length === 1)).toHaveLength(1)
+        expect(results.filter(result => result.names.length === 2)).toHaveLength(8)
+        expect(new Set(results.map(result => result.names.join('|'))).size).toBe(9)
+        for (const result of results) {
+          expect(result.multiplier).toBe(calculateEffectiveness(chart, name, result.names))
+        }
+      }
+    }
   })
   it('全9攻撃で単属性9件と複合属性36組を順序・重複・倍率を保って統合する', () => {
     const candidates = [...chart.names.map(name => [name]), ...enumerateDefensePairs(chart.names)]

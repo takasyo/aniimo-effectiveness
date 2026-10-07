@@ -61,12 +61,13 @@ export function enumerateDefensePairs(names: string[]): string[][] {
 
 export function buildResults(chart: TypeChart, selection: Selection): Result[] {
   const { attack, defense } = selection
-  if (attack && defense.length) {
+  if (attack && defense.length === 2) {
     return [{ names: defense, multiplier: calculateEffectiveness(chart, attack, defense) }]
   }
   if (attack) {
     const candidates = [...chart.names.map(name => [name]), ...enumerateDefensePairs(chart.names)]
-    return candidates.map(names => ({ names, multiplier: calculateEffectiveness(chart, attack, names) }))
+    return candidates.filter(names => !defense.length || names.includes(defense[0]))
+      .map(names => ({ names, multiplier: calculateEffectiveness(chart, attack, names) }))
   }
   if (defense.length) {
     return chart.names.map(name => ({ names: [name], multiplier: calculateEffectiveness(chart, name, defense) }))
