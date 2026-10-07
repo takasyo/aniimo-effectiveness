@@ -19,7 +19,7 @@
 }
 
 * { box-sizing: border-box; }
-body { margin: 0; min-width: 320px; background-image: linear-gradient(#dce2df50 1px, transparent 1px); background-size: 100% 32px; }
+body { margin: 0; min-width: 320px; }
 button, a { -webkit-tap-highlight-color: transparent; }
 button { font: inherit; cursor: pointer; color: inherit; }
 button:disabled { cursor: default; }
