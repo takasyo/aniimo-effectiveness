@@ -19,6 +19,56 @@
     ]
   },
   {
+    "no": 6,
+    "name": "ステラメイジ",
+    "form": [
+      { "form_name": "基本", "types": ["闇"] },
+      { "form_name": "雨天", "types": ["闇", "水"] },
+      { "form_name": "虹色", "types": ["闇", "氷"] }
+    ]
+  },
+  {
+    "no": 8,
+    "name": "トロンボカモメ",
+    "form": [
+      { "form_name": "基本", "types": ["風"] },
+      { "form_name": "砂浜", "types": ["風", "水"] },
+      { "form_name": "高地", "types": ["風", "草"] }
+    ]
+  },
+  {
+    "no": 9,
+    "name": "トランペカモメ",
+    "form": [
+      { "form_name": "基本", "types": ["風"] },
+      { "form_name": "砂浜", "types": ["風", "水"] },
+      { "form_name": "高地", "types": ["風", "草"] },
+      { "form_name": "虹色", "types": ["風", "雷"] }
+    ]
+  },
+  {
+    "no": 10,
+    "name": "チューバカモメ",
+    "form": [
+      { "form_name": "基本", "types": ["風"] },
+      { "form_name": "砂浜", "types": ["風", "水"] },
+      { "form_name": "高地", "types": ["風", "草"] }
+    ]
+  },
+  {
+    "no": 12,
+    "name": "フラフラワー",
+    "form": [
+      { "form_name": "基本", "types": ["草"] },
+      { "form_name": "高地", "types": ["草"] },
+      { "form_name": "森林", "types": ["草"] },
+      { "form_name": "草原", "types": ["草"] },
+      { "form_name": "高原", "types": ["草"] },
+      { "form_name": "山林", "types": ["草"] },
+      { "form_name": "虹色", "types": ["草"] }
+    ]
+  },
+  {
     "no": 15,
     "name": "ロータウス",
     "form": [
@@ -26,6 +76,353 @@
       { "form_name": "花畑", "types": ["水", "氷"] },
       { "form_name": "雪原", "types": ["水", "氷"] },
       { "form_name": "虹色", "types": ["水", "光"] }
+    ]
+  },
+  {
+    "no": 16,
+    "name": "ロータスドラゴン",
+    "form": [
+      { "form_name": "基本", "types": ["草", "水"] }
+    ]
+  },
+  {
+    "no": 18,
+    "name": "モコモッコ",
+    "form": [
+      { "form_name": "基本", "types": ["風"] },
+      { "form_name": "雨天", "types": ["風"] },
+      { "form_name": "雲海", "types": ["風"] },
+      { "form_name": "高原", "types": ["風"] },
+      { "form_name": "虹色", "types": ["風"] }
+    ]
+  },
+  {
+    "no": 19,
+    "name": "ネムネーム",
+    "form": [
+      { "form_name": "基本", "types": ["闇"] }
+    ]
+  },
+  {
+    "no": 21,
+    "name": "マジョボウソウ",
+    "form": [
+      { "form_name": "基本", "types": ["闇", "草"] },
+      { "form_name": "山地", "types": ["闇", "草"] },
+      { "form_name": "虹色", "types": ["闇", "草"] }
+    ]
+  },
+  {
+    "no": 22,
+    "name": "ウドー",
+    "form": [
+      { "form_name": "基本", "types": ["草"] },
+      { "form_name": "山地", "types": ["草", "土"] }
+    ]
+  },
+  {
+    "no": 24,
+    "name": "アオクサガニ",
+    "form": [
+      { "form_name": "基本", "types": ["土", "草"] },
+      { "form_name": "湿地", "types": ["土"] },
+      { "form_name": "砂浜", "types": ["土"] },
+      { "form_name": "湾岸", "types": ["土"] }
+    ]
+  },
+  {
+    "no": 25,
+    "name": "コウラガニ",
+    "form": [
+      { "form_name": "基本", "types": ["氷"] }
+    ]
+  },
+  {
+    "no": 27,
+    "name": "ホムラン",
+    "form": [
+      { "form_name": "基本", "types": ["火"] },
+      { "form_name": "高地", "types": ["火"] },
+      { "form_name": "森林", "types": ["火"] },
+      { "form_name": "花畑", "types": ["火"] }
+    ]
+  },
+  {
+    "no": 29,
+    "name": "マボロシアゲハ",
+    "form": [
+      { "form_name": "基本", "types": ["風"] },
+      { "form_name": "花畑", "types": ["風", "草"] },
+      { "form_name": "夜間", "types": ["風", "闇"] },
+      { "form_name": "山林", "types": ["風", "土"] }
+    ]
+  },
+  {
+    "no": 30,
+    "name": "ユメアゲハ",
+    "form": [
+      { "form_name": "虹色", "types": ["草", "風"] }
+    ]
+  },
+  {
+    "no": 32,
+    "name": "タンテイバット",
+    "form": [
+      { "form_name": "基本", "types": ["風"] }
+    ]
+  },
+  {
+    "no": 34,
+    "name": "トゲイバラ",
+    "form": [
+      { "form_name": "基本", "types": ["草"] },
+      { "form_name": "雷雨", "types": ["草", "雷"] },
+      { "form_name": "塔林", "types": ["草"] },
+      { "form_name": "虹色", "types": ["草", "水"] }
+    ]
+  },
+  {
+    "no": 35,
+    "name": "メリーメリー",
+    "form": [
+      { "form_name": "基本", "types": ["草"] },
+      { "form_name": "虹色", "types": ["草", "光"] }
+    ]
+  },
+  {
+    "no": 37,
+    "name": "シャウトカゲ",
+    "form": [
+      { "form_name": "基本", "types": ["草"] },
+      { "form_name": "雪原", "types": ["草", "氷"] },
+      { "form_name": "高地", "types": ["草"] },
+      { "form_name": "花畑", "types": ["草"] }
+    ]
+  },
+  {
+    "no": 39,
+    "name": "アロマドリ",
+    "form": [
+      { "form_name": "基本", "types": ["闇"] }
+    ]
+  },
+  {
+    "no": 41,
+    "name": "ヤイバカマキリ",
+    "form": [
+      { "form_name": "基本", "types": ["闇"] },
+      { "form_name": "森林", "types": ["闇", "草"] },
+      { "form_name": "高地", "types": ["闇", "火"] },
+      { "form_name": "虹色", "types": ["闇", "火"] }
+    ]
+  },
+  {
+    "no": 44,
+    "name": "グレイシャー",
+    "form": [
+      { "form_name": "基本", "types": ["氷"] },
+      { "form_name": "夜間", "types": ["氷", "闇"] },
+      { "form_name": "虹色", "types": ["氷", "光"] }
+    ]
+  },
+  {
+    "no": 46,
+    "name": "ボルトミンク",
+    "form": [
+      { "form_name": "基本", "types": ["雷"] },
+      { "form_name": "虹色", "types": ["雷", "闇"] }
+    ]
+  },
+  {
+    "no": 48,
+    "name": "ダブルパンチリス",
+    "form": [
+      { "form_name": "基本", "types": ["火"] }
+    ]
+  },
+  {
+    "no": 51,
+    "name": "ピョピョタ",
+    "form": [
+      { "form_name": "基本", "types": ["水"] },
+      { "form_name": "夜間", "types": ["水", "闇"] }
+    ]
+  },
+  {
+    "no": 52,
+    "name": "パンパンタ",
+    "form": [
+      { "form_name": "基本", "types": ["水"] },
+      { "form_name": "夜間", "types": ["水", "闇"] },
+      { "form_name": "虹色", "types": ["水"] }
+    ]
+  },
+  {
+    "no": 55,
+    "name": "ステラナイト",
+    "form": [
+      { "form_name": "基本", "types": ["水"] },
+      { "form_name": "雷雨", "types": ["水", "雷"] },
+      { "form_name": "虹色", "types": ["水", "光"] }
+    ]
+  },
+  {
+    "no": 57,
+    "name": "タマローラー",
+    "form": [
+      { "form_name": "基本", "types": ["土"] },
+      { "form_name": "雪原", "types": ["土", "氷"] },
+      { "form_name": "虹色", "types": ["土", "闇"] }
+    ]
+  },
+  {
+    "no": 58,
+    "name": "ロックン",
+    "form": [
+      { "form_name": "基本", "types": ["土"] },
+      { "form_name": "雪原", "types": ["土", "氷"] }
+    ]
+  },
+  {
+    "no": 60,
+    "name": "パビリビリ",
+    "form": [
+      { "form_name": "基本", "types": ["雷"] },
+      { "form_name": "虹色", "types": ["雷", "光"] }
+    ]
+  },
+  {
+    "no": 62,
+    "name": "メットユウシ",
+    "form": [
+      { "form_name": "基本", "types": ["闇"] },
+      { "form_name": "雪原", "types": ["闇", "氷"] },
+      { "form_name": "山林", "types": ["闇"] },
+      { "form_name": "虹色", "types": ["闇"] }
+    ]
+  },
+  {
+    "no": 63,
+    "name": "メットガード",
+    "form": [
+      { "form_name": "基本", "types": ["闇"] },
+      { "form_name": "雪原", "types": ["闇", "氷"] },
+      { "form_name": "山林", "types": ["闇"] }
+    ]
+  },
+  {
+    "no": 66,
+    "name": "ヘルゴン",
+    "form": [
+      { "form_name": "基本", "types": ["風"] },
+      { "form_name": "山地", "types": ["風"] }
+    ]
+  },
+  {
+    "no": 67,
+    "name": "インフェルゴン",
+    "form": [
+      { "form_name": "基本", "types": ["火"] },
+      { "form_name": "虹色", "types": ["火", "風"] }
+    ]
+  },
+  {
+    "no": 69,
+    "name": "ヒスクマ",
+    "form": [
+      { "form_name": "基本", "types": ["土"] },
+      { "form_name": "虹色", "types": ["土", "闇"] }
+    ]
+  },
+  {
+    "no": 72,
+    "name": "マグマレックス",
+    "form": [
+      { "form_name": "基本", "types": ["火", "土"] },
+      { "form_name": "虹色", "types": ["火", "闇"] }
+    ]
+  },
+  {
+    "no": 74,
+    "name": "スパインサウルス",
+    "form": [
+      { "form_name": "基本", "types": ["土"] }
+    ]
+  },
+  {
+    "no": 76,
+    "name": "オシロアリ",
+    "form": [
+      { "form_name": "基本", "types": ["土"] }
+    ]
+  },
+  {
+    "no": 79,
+    "name": "シャンデリアクラゲ",
+    "form": [
+      { "form_name": "基本", "types": ["雷"] },
+      { "form_name": "雨天", "types": ["雷", "水"] },
+      { "form_name": "虹色", "types": ["雷", "光"] }
+    ]
+  },
+  {
+    "no": 81,
+    "name": "モクヨクドリ",
+    "form": [
+      { "form_name": "基本", "types": ["水"] }
+    ]
+  },
+  {
+    "no": 82,
+    "name": "ベーシス",
+    "form": [
+      { "form_name": "基本", "types": ["雷"] }
+    ]
+  },
+  {
+    "no": "-",
+    "name": "ルナーラ",
+    "form": [
+      { "form_name": "基本", "types": ["光"] }
+    ]
+  },
+  {
+    "no": "-",
+    "name": "ヘリオン",
+    "form": [
+      { "form_name": "基本", "types": ["光"] }
+    ]
+  },
+  {
+    "no": "S1",
+    "name": "イリサリス",
+    "form": [
+      { "form_name": "虹色", "types": ["草"] }
+    ]
+  },
+  {
+    "no": "S1",
+    "name": "ブレイクトカゲ",
+    "form": [
+      { "form_name": "基本", "types": ["雷"] }
+    ]
+  },
+  {
+    "no": "S1",
+    "name": "デンキカマキリ",
+    "form": [
+      { "form_name": "基本", "types": ["雷"] },
+      { "form_name": "虹色", "types": ["雷", "光"] }
+      
+    ]
+  },
+  {
+    "no": "S1",
+    "name": "スパークエルフ",
+    "form": [
+      { "form_name": "基本", "types": ["火"] },
+      { "form_name": "虹色", "types": ["火"] }
+      
     ]
   }
 ]
