@@ -12,6 +12,38 @@ async function load(page: Page): Promise<void> {
   await expect(page.locator('.type-button')).toHaveCount(18)
 }
 
+test('OS設定を初期テーマとして使い、切替後は選択を保存する', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'dark' })
+  await load(page)
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#171b1a')
+  await expect(page.locator('html')).toHaveCSS('background-color', 'rgb(23, 27, 26)')
+  await expect(page.locator('.type-button').first()).toHaveCSS('background-color', 'rgb(34, 41, 39)')
+  await page.getByRole('button', { name: 'ライトモードに切替' }).click()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute('content', '#f4f6f5')
+  await expect(page.locator('.type-button').first()).toHaveCSS('background-color', 'rgb(255, 255, 255)')
+  await expect(page.getByRole('button', { name: 'ダークモードに切替' })).toBeVisible()
+  await page.emulateMedia({ colorScheme: 'light' })
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+  await page.reload()
+  await expect(page.locator('.type-button')).toHaveCount(18)
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+  await page.getByRole('button', { name: 'ダークモードに切替' }).click()
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+  await page.reload()
+  await expect(page.locator('.type-button')).toHaveCount(18)
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+})
+
+test('保存済み設定がなければOSの配色変更に追従する', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'light' })
+  await load(page)
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+  await page.emulateMedia({ colorScheme: 'dark' })
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+})
+
 async function checkLayout(page: Page): Promise<void> {
   const violations = await page.evaluate(() => {
     const issues: string[] = []

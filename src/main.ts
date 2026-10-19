@@ -1,5 +1,5 @@
 import './style.css'
-import { createIcons, RotateCcw, ArrowRight, Swords, Shield, X } from 'lucide'
+import { createIcons, RotateCcw, ArrowRight, Swords, Shield, X, Sun, Moon } from 'lucide'
 import { buildResults, parseChart, stages, toggleSelection } from './type-chart'
 import type { Effectiveness, Selection, TypeChart } from './type-chart'
 import { typeIcons } from './data/type-icons'
@@ -7,6 +7,12 @@ import { characterKey, indexCharacters, parseCharacters } from './characters'
 import type { Character } from './characters'
 
 const app = document.querySelector<HTMLDivElement>('#app')!
+const themePreference = window.matchMedia('(prefers-color-scheme: dark)')
+const themeStorageKey = 'aniimo-theme'
+type Theme = 'light' | 'dark'
+const storedTheme = localStorage.getItem(themeStorageKey)
+let hasUserThemePreference = storedTheme === 'light' || storedTheme === 'dark'
+let theme: Theme = storedTheme === 'light' ? 'light' : storedTheme === 'dark' ? 'dark' : themePreference.matches ? 'dark' : 'light'
 let chart: TypeChart | null = null
 let selection: Selection = { attack: null, defense: [] }
 let viewedDefense: string[] = []
@@ -18,6 +24,11 @@ const labels: Record<Effectiveness, string> = { 2.56: '重複弱点', 1.6: '弱�
 const palette = ['#ba4545', '#287ba0', '#b07d14', '#40805a', '#ad5791', '#467fa2', '#687043', '#8b649e', '#636d7d']
 const escape = (text: string) => text.replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]!)
 const multiplierText = (value: Effectiveness) => `×${value}`
+
+function applyTheme(): void {
+  document.documentElement.dataset.theme = theme
+  document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')!.content = theme === 'dark' ? '#171b1a' : '#f4f6f5'
+}
 
 function marker(name: string): string {
   const index = chart!.names.indexOf(name)
@@ -95,13 +106,13 @@ function results(): string {
 
 function render(): void {
   const focus = (document.activeElement as HTMLElement | null)?.dataset.focus
-  app.innerHTML = `<header class="app-header"><div class="brand"><span class="brand-symbol" aria-hidden="true">9</span><div><p class="eyebrow">ANIIMO TYPE EFFECTIVENESS</p><h1>アニモ属性相性</h1></div></div><div class="header-actions"><button class="icon-button" data-action="reset" data-focus="reset" ${!selection.attack && !selection.defense.length ? 'disabled' : ''} title="すべての選択を解除" aria-label="すべての選択を解除"><i data-lucide="rotate-ccw"></i></button></div></header>
+  app.innerHTML = `<header class="app-header"><div class="brand"><span class="brand-symbol" aria-hidden="true">9</span><div><p class="eyebrow">ANIIMO TYPE EFFECTIVENESS</p><h1>アニモ属性相性</h1></div></div><div class="header-actions"><button class="icon-button" data-action="toggle-theme" data-focus="toggle-theme" title="${theme === 'dark' ? 'ライトモードに切替' : 'ダークモードに切替'}" aria-label="${theme === 'dark' ? 'ライトモードに切替' : 'ダークモードに切替'}"><i data-lucide="${theme === 'dark' ? 'sun' : 'moon'}"></i></button><button class="icon-button" data-action="reset" data-focus="reset" ${!selection.attack && !selection.defense.length ? 'disabled' : ''} title="すべての選択を解除" aria-label="すべての選択を解除"><i data-lucide="rotate-ccw"></i></button></div></header>
     <div class="dataset-bar"><span class="dataset-status">相性表</span><span class="dataset-name">${chart ? escape(chart.names.join(' / ')) : ''}</span><span class="dataset-meta">9属性</span></div>
     ${error ? `<div class="error" role="alert">${escape(error)}</div>` : ''}
     ${characterError ? `<div class="error" role="alert">${escape(characterError)}</div>` : ''}
     <main>${chart ? `<div class="selectors">${selector('attack')}${selector('defense')}</div>${results()}` : `<div class="loading-state" role="status">${loading ? '相性表を読み込み中…' : '相性表を読み込めませんでした。'}</div>`}</main>
     <footer><span>TYPE MATCH / 9</span></footer>`
-  createIcons({ icons: { RotateCcw, ArrowRight, Swords, Shield, X }, attrs: { 'aria-hidden': 'true', 'stroke-width': 1.7 } })
+  createIcons({ icons: { RotateCcw, ArrowRight, Swords, Shield, X, Sun, Moon }, attrs: { 'aria-hidden': 'true', 'stroke-width': 1.7 } })
   app.querySelectorAll<HTMLImageElement>('.type-marker img, .character-icon').forEach(image => {
     image.addEventListener('error', () => image.remove(), { once: true })
   })
@@ -114,6 +125,14 @@ app.addEventListener('click', event => {
   const button = (event.target as Element).closest<HTMLButtonElement>('button')
   if (!button || button.disabled) return
   const action = button.dataset.action
+  if (action === 'toggle-theme') {
+    theme = theme === 'dark' ? 'light' : 'dark'
+    localStorage.setItem(themeStorageKey, theme)
+    hasUserThemePreference = true
+    applyTheme()
+    render()
+    return
+  }
   if (!chart) return
   if (action || button.dataset.side) viewedDefense = []
   if (action === 'reset') selection = { attack: null, defense: [] }
@@ -128,6 +147,15 @@ app.addEventListener('click', event => {
   }
   render()
 })
+
+themePreference.addEventListener('change', event => {
+  if (hasUserThemePreference) return
+  theme = event.matches ? 'dark' : 'light'
+  applyTheme()
+  render()
+})
+
+applyTheme()
 
 async function initialize(): Promise<void> {
   render()

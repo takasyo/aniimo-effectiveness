@@ -13,6 +13,10 @@ npm run dev
 
 表示されたローカルURLを開いてください。production buildはGitHub Pagesの `/aniimo-effectiveness/` 配下で配信される設定です。HTMLの直接オープンではなくHTTPサーバーを使用します。
 
+## ダークモード
+
+初回表示ではOSの配色設定に合わせてライト／ダークモードを選びます。画面右上の月・太陽ボタンで切り替えられ、手動で選んだテーマはブラウザーに保存され、次回以降も維持されます。
+
 ## GitHub Pagesへの公開
 
 このリポジトリは [https://takasyo.github.io/aniimo-effectiveness/](https://takasyo.github.io/aniimo-effectiveness/) での公開を想定しています。デフォルトブランチにpushするとGitHub Actionsがテストとproduction buildを実行し、成功後にGitHub Pagesへデプロイします。
