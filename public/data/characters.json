@@ -455,7 +455,8 @@
     "no": 8,
     "name": "ゼニマクラ",
     "form": [
-      { "form_name": "基本", "types": ["闇"] }
+      { "form_name": "基本", "types": ["闇"] },
+      { "form_name": "虹色", "types": ["闇"] }
       
     ]
   },
@@ -464,7 +465,8 @@
     "name": "リーフゴート",
     "form": [
       { "form_name": "基本", "types": ["草", "水"] },
-      { "form_name": "暴風", "types": ["草", "風"] }
+      { "form_name": "暴風", "types": ["草", "風"] },
+      { "form_name": "虹色", "types": ["草", "闇"] }
       
     ]
   },
@@ -523,7 +525,8 @@
     "no": 22,
     "name": "ローヤルビー",
     "form": [
-      { "form_name": "基本", "types": ["風"] }
+      { "form_name": "基本", "types": ["風"] },
+      { "form_name": "虹色", "types": ["風", "光"] }
       
     ]
   },
@@ -551,7 +554,8 @@
     "name": "プテロン",
     "form": [
       { "form_name": "基本", "types": ["水"] },
-      { "form_name": "暴風", "types": ["水", "風"] }
+      { "form_name": "暴風", "types": ["水", "風"] },
+      { "form_name": "虹色", "types": ["水", "闇"] }
       
     ]
   },
@@ -559,7 +563,8 @@
     "no": 29,
     "name": "カイトウバット",
     "form": [
-      { "form_name": "基本", "types": ["闇"] }
+      { "form_name": "基本", "types": ["闇"] },
+      { "form_name": "虹色", "types": ["闇", "火"] }
       
     ]
   },
